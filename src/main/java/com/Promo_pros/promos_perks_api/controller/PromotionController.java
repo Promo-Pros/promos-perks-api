@@ -30,4 +30,8 @@ public class PromotionController {
     }
 
     //DELETE
+    @DeleteMapping("/{name}")
+    public Promotion deletePromotion(@PathVariable String name) {
+        return promotionService.deletePromotion(name);
+    }
 }
