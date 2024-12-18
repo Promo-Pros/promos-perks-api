@@ -25,4 +25,14 @@ public class PromotionServiceImpl implements PromotionService {
     public List<Promotion> getAllPromotions() {
         return promotionRepository.findAll();
     }
+
+    @Override
+    public Promotion deletePromotion(String name) {
+        Promotion newPromotion = promotionRepository.findByName(name);
+        if(newPromotion != null){
+            promotionRepository.deleteById(newPromotion.getId());
+            return newPromotion;
+        }
+        return  null;
+    }
 }

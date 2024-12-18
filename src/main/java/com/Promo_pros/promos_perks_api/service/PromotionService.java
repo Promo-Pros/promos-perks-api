@@ -8,4 +8,6 @@ public interface PromotionService {
     Promotion createPromotion(Promotion promotion);
 
     List<Promotion> getAllPromotions();
+
+    Promotion deletePromotion(String name);
 }
