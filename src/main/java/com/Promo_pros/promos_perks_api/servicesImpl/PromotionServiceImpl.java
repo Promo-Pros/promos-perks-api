@@ -35,4 +35,16 @@ public class PromotionServiceImpl implements PromotionService {
         }
         return  null;
     }
+
+    @Override
+    public Promotion updatePromotion(String name, Promotion promotionDetails) {
+        Promotion existingPromotion = promotionRepository.findByName(name);
+        if(existingPromotion != null) {
+            existingPromotion.setName(promotionDetails.getName());
+            existingPromotion.setDescription(promotionDetails.getDescription());
+            existingPromotion.setStatus(promotionDetails.getStatus());
+            return promotionRepository.save(existingPromotion);
+        }
+        return null;
+    }
 }

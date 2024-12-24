@@ -10,4 +10,6 @@ public interface PromotionService {
     List<Promotion> getAllPromotions();
 
     Promotion deletePromotion(String name);
+
+    Promotion updatePromotion(String name, Promotion promotionDetails);
 }

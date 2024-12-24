@@ -17,14 +17,14 @@ public class PromotionController {
 
     //POST
     @PostMapping
-    public Promotion createPromotion(@RequestBody Promotion promotion){
+    public Promotion createPromotion(@RequestBody Promotion promotion) {
         System.out.println(promotion.getDescription());
         return promotionService.createPromotion(promotion);
     }
 
     //GET
     @GetMapping
-    public List<Promotion> getAllPromotions(){
+    public List<Promotion> getAllPromotions() {
         return promotionService.getAllPromotions();
 
     }
@@ -34,4 +34,11 @@ public class PromotionController {
     public Promotion deletePromotion(@PathVariable String name) {
         return promotionService.deletePromotion(name);
     }
+
+    //PUT
+    @PutMapping("/{name}")
+    public Promotion updatePromotion(@PathVariable String name, @RequestBody Promotion promotinDetails) {
+        return promotionService.updatePromotion(name, promotinDetails);
+    }
+
 }
