@@ -37,8 +37,8 @@ public class PromotionController {
 
     //PUT
     @PutMapping("/{name}")
-    public Promotion updatePromotion(@PathVariable String name, @RequestBody Promotion promotinDetails) {
-        return promotionService.updatePromotion(name, promotinDetails);
+    public Promotion updatePromotion(@PathVariable String name, @RequestBody Promotion promotionDetails) {
+        return promotionService.updatePromotion(name, promotionDetails);
     }
 
 }
