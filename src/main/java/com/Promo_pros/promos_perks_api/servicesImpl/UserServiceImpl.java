@@ -3,25 +3,22 @@ package com.Promo_pros.promos_perks_api.servicesImpl;
 import com.Promo_pros.promos_perks_api.entity.User;
 import com.Promo_pros.promos_perks_api.repository.UserRepository;
 import com.Promo_pros.promos_perks_api.service.UserService;
+import com.Promo_pros.promos_perks_api.util.BCryptUtil;
 import org.springframework.stereotype.Service;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 @Service
 public class UserServiceImpl implements UserService {
 
     private UserRepository userRepository;
-    private BCryptPasswordEncoder bCryptPasswordEncoder;
 
     public UserServiceImpl(UserRepository userRepository) {
-
         this.userRepository = userRepository;
-        this.bCryptPasswordEncoder = new BCryptPasswordEncoder();
     }
 
     @Override
     public User createUser(User user) {
-
-        String hashedPassword = bCryptPasswordEncoder.encode(user.getPassword());
+        //Hash the password
+        String hashedPassword = BCryptUtil.generatedSecurePassword(user.getPassword());
         user.setPassword(hashedPassword);
         return userRepository.save(user);
     }
@@ -33,6 +30,8 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User getUserByEmail(String email) {
-        return userRepository.findByEmail(email).orElse(null);
+        return null;
     }
+
+
 }
