@@ -1,12 +1,16 @@
 package com.Promo_pros.promos_perks_api.entity;
 
+
 import com.Promo_pros.promos_perks_api.roles.AccountTypes;
 import jakarta.persistence.*;
 import lombok.*;
+import org.springframework.web.bind.annotation.CrossOrigin;
 
 @Entity
-@AllArgsConstructor
-@NoArgsConstructor
+//@AllArgsConstructor
+//@NoArgsConstructor
+//@Setter
+//@Getter
 @Table(name = "users")
 public class User {
     @Id
@@ -20,28 +24,12 @@ public class User {
     @Enumerated
     private AccountTypes status;
 
-    public Long getId() {
-        return id;
+    public String getPassword() {
+        return password;
     }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public int getMtn() {
-        return mtn;
-    }
-
-    public void setMtn(int mtn) {
-        this.mtn = mtn;
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     public String getEmail() {
@@ -52,19 +40,27 @@ public class User {
         this.email = email;
     }
 
-    public String getPassword() {
-        return password;
+    public int getMtn() {
+        return mtn;
     }
 
-    public void setPassword(String password) {
-        this.password = password;
-    }
-    public AccountTypes getStatus() {
-        return status;
+    public void setMtn(int mtn) {
+        this.mtn = mtn;
     }
 
-    public void setStatus(AccountTypes status) {
-        this.status = status;
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 }
-
