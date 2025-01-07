@@ -33,5 +33,15 @@ public class UserServiceImpl implements UserService {
         return null;
     }
 
+    @Override
+    public String loginUser(User user) {
+        User existingUser =  userRepository.findByEmail(user.getEmail()).orElse(null);
+        if (existingUser != null && BCryptUtil.matchPasswords(user.getPassword(), existingUser.getPassword())) {
+            return "You have logged in";
+        }
+        return "Invalid Login";
+
+    }
+
 
 }
