@@ -13,8 +13,8 @@ public class HomeController {
         return "index";
     }
 
-//    @GetMapping("/home")
-//    public String home() {
-//        return "Welcome to home page";
-//    }
+    @GetMapping("/home")
+    public String home() {
+        return "Welcome to home page";
+    }
 }

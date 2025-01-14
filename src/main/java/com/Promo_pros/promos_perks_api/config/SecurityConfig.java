@@ -29,7 +29,6 @@ public class SecurityConfig {
                         .anyRequest().authenticated()
                 )
 
-                .oauth2Login(withDefaults())
 //                .oauth2Login(oauth2 -> oauth2
 //                        .defaultSuccessUrl("/home", true) // Redirect after successful login
 //                )
