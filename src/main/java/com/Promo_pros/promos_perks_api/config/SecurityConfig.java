@@ -11,6 +11,8 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.io.IOException;
 
+import static org.springframework.security.config.Customizer.withDefaults;
+
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
@@ -26,9 +28,11 @@ public class SecurityConfig {
                         .requestMatchers("/", "/images/**").permitAll()
                         .anyRequest().authenticated()
                 )
-                .oauth2Login(oauth2 -> oauth2
-                        .defaultSuccessUrl("/home", true) // Redirect after successful login
-                )
+
+                .oauth2Login(withDefaults())
+//                .oauth2Login(oauth2 -> oauth2
+//                        .defaultSuccessUrl("/home", true) // Redirect after successful login
+//                )
 
                 // configure logout with Auth0
                 .logout(logout -> logout
