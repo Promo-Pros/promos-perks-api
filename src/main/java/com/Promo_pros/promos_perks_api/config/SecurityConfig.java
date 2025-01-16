@@ -1,6 +1,8 @@
 package com.Promo_pros.promos_perks_api.config;
 
 
+import com.Promo_pros.promos_perks_api.security.JwtAuthenticationEntryPoint;
+import com.Promo_pros.promos_perks_api.security.JwtAuthenticationFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
