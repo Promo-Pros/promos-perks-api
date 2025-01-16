@@ -2,6 +2,7 @@ package com.Promo_pros.promos_perks_api.controller;
 
 import com.Promo_pros.promos_perks_api.entity.Promotion;
 import com.Promo_pros.promos_perks_api.service.PromotionService;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -19,6 +20,17 @@ public class PromotionController {
     @PostMapping
     public Promotion createPromotion(@RequestBody Promotion promotion) {
         System.out.println(promotion.getDescription());
+        return promotionService.createPromotion(promotion);
+    }
+
+
+    //this may have to change from a POST to GET because this may be used with login???
+    //POST
+    //authorization based on the user's role
+    @PreAuthorize("hasAuthority('employee') or hasAuthority('veteran')")
+    @PostMapping
+    public Promotion verifyPromotion(@RequestBody Promotion promotion) {
+        //this may need fixing to verifyPromotion. might have to add something to impl
         return promotionService.createPromotion(promotion);
     }
 
