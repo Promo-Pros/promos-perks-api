@@ -53,10 +53,10 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public String loginUser(User user) {
-        User existingUser =  userRepository.findByEmail(user.getEmail()).orElseThrow(() ->
+        User existingUser = userRepository.findByEmail(user.getEmail()).orElseThrow(() ->
                 new APIException(HttpStatus.NOT_FOUND, "User not found"));
 
-        if(BCryptUtil.matchPasswords(user.getPassword(), existingUser.getPassword())){
+        if (BCryptUtil.matchPasswords(user.getPassword(), existingUser.getPassword())) {
             Authentication authentication = new UsernamePasswordAuthenticationToken(
                     existingUser.getEmail(), null, new ArrayList<>()
             );
@@ -64,5 +64,5 @@ public class UserServiceImpl implements UserService {
         }
         throw new APIException(HttpStatus.UNAUTHORIZED, "Invalid login credentials");
 
-
+    }
 }

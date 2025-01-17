@@ -3,6 +3,7 @@ package com.Promo_pros.promos_perks_api.config;
 
 import com.Promo_pros.promos_perks_api.security.JwtAuthenticationEntryPoint;
 import com.Promo_pros.promos_perks_api.security.JwtAuthenticationFilter;
+import jakarta.servlet.Filter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -13,6 +14,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
@@ -48,10 +50,10 @@ public class SecurityConfig {
                         auth.requestMatchers("/user/**").permitAll()
                                 .anyRequest()
                                 .authenticated())
-                .exceptionHandling(exception -> exception.authenticationEntryPoint(authenticationEntryPoint))
+                .exceptionHandling(exception -> exception.authenticationEntryPoint((AuthenticationEntryPoint) authenticationEntryPoint))
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 
-        http.addFilterBefore(authenticationFilter, UsernamePasswordAuthenticationFilter.class);
+        http.addFilterBefore((Filter) authenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
