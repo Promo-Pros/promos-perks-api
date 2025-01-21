@@ -22,10 +22,11 @@ public class UserServiceImpl implements UserService {
         this.bCryptUtil = bCryptUtil;
     }
 
+    //may have to add an if statement to assign other roles other than default...
     @Override
     public User createUser(User user) {
         if(user.getRoles() == null || user.getRoles().isEmpty()) {
-            user.setRoles(Set.of("ROLE_USER")); //set to a default role
+            user.setRoles(Set.of("ROLE_CUSTOMER")); //set to a default role
         }
         //Hash the password
         String hashedPassword = BCryptUtil.generatedSecurePassword(user.getPassword());

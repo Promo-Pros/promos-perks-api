@@ -2,10 +2,13 @@ package com.Promo_pros.promos_perks_api.util;
 
 import com.Promo_pros.promos_perks_api.entity.User;
 import io.jsonwebtoken.*;
+import io.jsonwebtoken.security.Keys;
+import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
+import java.security.Key;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -25,9 +28,18 @@ public class JwtTokenUtil {
     @Value("${jwt.secret}")
     private String secret;
 
+    private Key signingKey;
+
+    //Initializes the signing key using the secret
+    @PostConstruct
+    public void init() {
+        this.signingKey = Keys.hmacShaKeyFor(secret.getBytes());
+    }
+
     public String generateAccessToken(User user) {
         return Jwts.builder()
-                .setSubject(user.getEmail() + "," + String.join(",", user.getRoles()))
+                .setSubject(user.getEmail())
+                .claim("roles", user.getRoles())
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + 60 * 60 * 1000)) //1 hr expiration
                 .signWith(SignatureAlgorithm.HS512, secret)
@@ -36,16 +48,16 @@ public class JwtTokenUtil {
     }
 
     public List<String> getRoles(String token) {
-        String subject = getSubject(token);
-        return Arrays.asList(subject.split(",")[1].split(","));
+        Claims claims = parseClaims(token);
+        return claims.get("roles", List.class);
     }
 
 //may need to get rid of below???
     public boolean validateAccessToken(String token) {
         try {
-            Jwts.parser().setSigningKey(secret).parseClaimsJws(token);
+            Jwts.builder().setSigningKey(signingKey).build().parseClaimsJws(token);
             return true;
-        } catch (ExpiredJwtException | MalformedJwtException | IllegalArgumentException ex) {
+        } catch (JwtException | IllegalArgumentException ex) {
             System.out.println(ex.getMessage());
         }
         return false;
@@ -56,8 +68,8 @@ public class JwtTokenUtil {
     }
 
     private Claims parseClaims(String token) {
-        return Jwts.parser()
-                .setSigningKey(secret)
+        return Jwts.builder()
+                .setSigningKey(signingKey)
                 .parseClaimsJws(token)
                 .getBody();
     }

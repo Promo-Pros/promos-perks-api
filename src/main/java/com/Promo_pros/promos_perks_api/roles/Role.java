@@ -6,7 +6,7 @@ package com.Promo_pros.promos_perks_api.roles;
 
 public enum Role {
     ROLE_ADMIN,
-    ROLE_USER,
+    ROLE_CUSTOMER,
     ROLE_EMPLOYEE,
     ROLE_VETERAN
 }

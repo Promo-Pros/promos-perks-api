@@ -34,7 +34,7 @@ public class SecurityConfig {
                         .requestMatchers("/promotions/admin/**").hasRole("ADMIN") //Restricted to admin
                         .requestMatchers("/promotions/veteran/**").hasRole("VETERAN") //Restricted to veterans
                         .requestMatchers("/promotions/employee/**").hasRole("EMPLOYEE") //Restricted to employees
-                        .requestMatchers("/promotions/**").hasAnyRole("USER", "EMPLOYEE", "VETERAN") //General access
+                        .requestMatchers("/promotions/**").hasAnyRole("CUSTOMER", "EMPLOYEE", "VETERAN") //General access
                         .anyRequest().authenticated() // All other endpoints require authentication
                 )
 
