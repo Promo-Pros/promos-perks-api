@@ -1,7 +1,9 @@
 package com.Promo_pros.promos_perks_api.util;
 
 import org.springframework.security.crypto.bcrypt.BCrypt;
+import org.springframework.stereotype.Component;
 
+@Component
 public class BCryptUtil {
     //Method to hash password
 
