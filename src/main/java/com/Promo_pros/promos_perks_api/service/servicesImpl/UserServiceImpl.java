@@ -6,6 +6,8 @@ import com.Promo_pros.promos_perks_api.service.UserService;
 import com.Promo_pros.promos_perks_api.util.BCryptUtil;
 import org.springframework.stereotype.Service;
 
+import java.util.Set;
+
 @Service
 public class UserServiceImpl implements UserService {
 
@@ -17,9 +19,12 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User createUser(User user) {
+        if(user.getRoles() == null || user.getRoles().isEmpty()) {
+            user.setRoles(Set.of("ROLE_USER")); //set to a default role
+        }
         //Hash the password
-        String hashedPassword = BCryptUtil.generatedSecurePassword(user.getPassword());
-        user.setPassword(hashedPassword);
+//        String hashedPassword = BCryptUtil.generatedSecurePassword(user.getPassword());
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
         return userRepository.save(user);
     }
 
