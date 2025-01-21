@@ -14,16 +14,10 @@ import java.util.List;
 
 @Component
 public class JwtTokenUtil {
-
-
     @Value("${jwt.expiration}")
     private long expiration;
-
-
     @Value("${jwt.secret}")
     private String secret;
-
-
     /**
      * Generates a JWT token for the given user.
      *
@@ -39,8 +33,6 @@ public class JwtTokenUtil {
                 .signWith(SignatureAlgorithm.HS512, secret) // Sign with HS512 algorithm and secret
                 .compact();
     }
-
-
     /**
      * Extracts roles from the given JWT token.
      *
@@ -51,8 +43,6 @@ public class JwtTokenUtil {
         Claims claims = parseClaims(token);
         return Arrays.asList(claims.get("roles", String.class).split(","));
     }
-
-
     /**
      * Validates the given JWT token.
      *
@@ -74,8 +64,6 @@ public class JwtTokenUtil {
         }
         return false; // Token is invalid
     }
-
-
     /**
      * Extracts the subject (e.g., email) from the token.
      *
@@ -85,8 +73,6 @@ public class JwtTokenUtil {
     public String getSubject(String token) {
         return parseClaims(token).getSubject();
     }
-
-
     /**
      * Parses claims from the given token.
      *

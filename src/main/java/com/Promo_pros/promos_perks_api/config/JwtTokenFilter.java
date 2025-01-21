@@ -1,6 +1,8 @@
 package com.Promo_pros.promos_perks_api.config;
 
 import com.Promo_pros.promos_perks_api.util.JwtTokenUtil;
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +15,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.ObjectUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
+import java.io.IOException;
 import java.util.List;
 
 @Component
@@ -41,41 +44,29 @@ public class JwtTokenFilter extends OncePerRequestFilter {
 
     private boolean hasAuthorizationBearer(HttpServletRequest request) {
         String header = request.getHeader("Authorization");
-        if (ObjectUtils.isEmpty(header) || !header.startsWith("Bearer")) {
-            return false;
-        }
-
-        return true;
+        return !ObjectUtils.isEmpty(header) && header.startsWith("Bearer");
     }
 
     private String getAccessToken(HttpServletRequest request) {
         String header = request.getHeader("Authorization");
-        String token = header.split(" ")[1].trim();
-        return token;
+        return header.split(" ")[1].trim();
     }
 
     private void setAuthenticationContext(String token, HttpServletRequest request) {
         UserDetails userDetails = getUserDetails(token);
-
-        UsernamePasswordAuthenticationToken
-                authentication = new UsernamePasswordAuthenticationToken(userDetails, null, null);
-
-        authentication.setDetails(
-                new WebAuthenticationDetailsSource().buildDetails(request));
-
+        UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails, null, null);
+        authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
         SecurityContextHolder.getContext().setAuthentication(authentication);
     }
 
     private UserDetails getUserDetails(String token) {
-        String[] jwtSubject = jwtTokenUtil.getSubject(token).split(",");
-        String email = jwtSubject[0];
+        String email = jwtTokenUtil.getSubject(token);
         List<String> roles = jwtTokenUtil.getRoles(token);
 
         return User.builder()
                 .username(email)
-                .password("")
+                .password("")  // Password isn't necessary for authentication after token validation
                 .roles(roles.toArray(new String[0]))
                 .build();
     }
-
 }
