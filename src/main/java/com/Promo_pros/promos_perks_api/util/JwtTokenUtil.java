@@ -13,6 +13,12 @@ import java.util.List;
 @Component
 public class JwtTokenUtil {
 
+    //Steps??
+//    Create JwtUtil for token generation and validation
+//    Implement JwtFilter for intercepting and validating tokens
+//    Update SecurityConfig to integrate the filter
+//    Add an AuthController for handling login and generating tokens.
+
     @Value("${jwt.expiration}")
     private long expiration;
 
