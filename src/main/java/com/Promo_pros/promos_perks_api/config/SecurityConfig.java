@@ -30,23 +30,32 @@ public class SecurityConfig {
         http
                 .csrf().disable()
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers( "/users").permitAll()
-                        .anyRequest().authenticated()
-                );
+                        .requestMatchers( "/users").permitAll()// Public endpoint
+                        .requestMatchers("/promotions/admin/**").hasRole("ADMIN") //Restricted to admin
+                        .requestMatchers("/promotions/veteran/**").hasRole("VETERAN") //Restricted to veterans
+                        .requestMatchers("/promotions/employee/**").hasRole("EMPLOYEE") //Restricted to employees
+                        .requestMatchers("/promotions/**").hasAnyRole("USER", "EMPLOYEE", "VETERAN") //General access
+                        .anyRequest().authenticated() // All other endpoints require authentication
+                )
 
+        .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
-        http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
         http.addFilterBefore(jwtTokenFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
 
+
+    //this may need to change...because we are not using in memory db
     @Bean
     public UserDetailsService userDetailsService() {
 
-        UserDetails kat = User.builder().username("kat@kat.com").password(passwordEncoder().encode("kat")).roles("USER")
+        UserDetails admin = User.builder().username("admin@admin.com").password(passwordEncoder().encode("admin")).roles("ADMIN")
                 .build();
 
-        return new InMemoryUserDetailsManager(kat);
+        UserDetails user = User.builder().username("user@user.com").password(passwordEncoder().encode("user")).roles("USER")
+                .build();
+
+        return new InMemoryUserDetailsManager(admin, user);
     }
 }
