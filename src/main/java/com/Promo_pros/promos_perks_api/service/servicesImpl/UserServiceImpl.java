@@ -16,7 +16,7 @@ public class UserServiceImpl implements UserService {
     private UserRepository userRepository;
     private BCryptUtil bCryptUtil;
 
-    public UserServiceImpl(UserRepository userRepository) {
+    public UserServiceImpl(UserRepository userRepository, JwtTokenUtil jwtTokenUtil, BCryptUtil bCryptUtil) {
         this.userRepository = userRepository;
         this.jwtTokenUtil = jwtTokenUtil;
         this.bCryptUtil = bCryptUtil;
@@ -43,20 +43,19 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User getUser(Long id) {
-        return userRepository.findById(id).orElse(new User());
+        return userRepository.findById(id).orElse(null);
     }
 
-    @Override
-    public User getUserByEmail(String email) {
-        return null;
-    }
+//    @Override
+//    public User getUserByEmail(String email) {
+//        return null;
+//    }
 
     @Override
     public String loginUser(User user) {
         User existingUser =  userRepository.findByEmail(user.getEmail()).orElse(null);
         if (existingUser != null && BCryptUtil.matchPasswords(user.getPassword(), existingUser.getPassword())) {
-            String token = jwtTokenUtil.generateAccessToken(existingUser);
-            return token;
+            return jwtTokenUtil.generateAccessToken(existingUser);
         }
         return "Invalid Login";
 
