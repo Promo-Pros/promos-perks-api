@@ -1,76 +1,103 @@
 package com.Promo_pros.promos_perks_api.util;
 
+
 import com.Promo_pros.promos_perks_api.entity.User;
 import io.jsonwebtoken.*;
-import io.jsonwebtoken.security.Keys;
-import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
-import java.security.Key;
+
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
+
 @Component
 public class JwtTokenUtil {
 
-    //Steps??
-//    Create JwtUtil for token generation and validation
-//    Implement JwtFilter for intercepting and validating tokens
-//    Update SecurityConfig to integrate the filter
-//    Add an AuthController for handling login and generating tokens.
 
     @Value("${jwt.expiration}")
     private long expiration;
 
+
     @Value("${jwt.secret}")
     private String secret;
 
-    private Key signingKey;
 
-    //Initializes the signing key using the secret
-    @PostConstruct
-    public void init() {
-        this.signingKey = Keys.hmacShaKeyFor(secret.getBytes());
-    }
-
+    /**
+     * Generates a JWT token for the given user.
+     *
+     * @param user The user object for whom the token is generated.
+     * @return A signed JWT token.
+     */
     public String generateAccessToken(User user) {
         return Jwts.builder()
-                .setSubject(user.getEmail())
-                .claim("roles", user.getRoles())
-                .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis() + 60 * 60 * 1000)) //1 hr expiration
-                .signWith(SignatureAlgorithm.HS512, secret)
+                .setSubject(user.getEmail()) // User's email as the subject
+                .claim("roles", user.getRoles()) // Store roles as claims
+                .setIssuedAt(new Date()) // Token issue date
+                .setExpiration(new Date(System.currentTimeMillis() + expiration)) // Expiration time
+                .signWith(SignatureAlgorithm.HS512, secret) // Sign with HS512 algorithm and secret
                 .compact();
-
     }
 
+
+    /**
+     * Extracts roles from the given JWT token.
+     *
+     * @param token The JWT token.
+     * @return A list of roles.
+     */
     public List<String> getRoles(String token) {
         Claims claims = parseClaims(token);
-        return claims.get("roles", List.class);
+        return Arrays.asList(claims.get("roles", String.class).split(","));
     }
 
-//may need to get rid of below???
+
+    /**
+     * Validates the given JWT token.
+     *
+     * @param token The JWT token to validate.
+     * @return True if the token is valid; false otherwise.
+     */
     public boolean validateAccessToken(String token) {
         try {
-            Jwts.builder().setSigningKey(signingKey).build().parseClaimsJws(token);
-            return true;
-        } catch (JwtException | IllegalArgumentException ex) {
-            System.out.println(ex.getMessage());
+            Jwts.parser().setSigningKey(secret).parseClaimsJws(token);
+            return true; // Token is valid
+        } catch (ExpiredJwtException ex) {
+            System.err.println("JWT expired: " + ex.getMessage());
+        } catch (MalformedJwtException ex) {
+            System.err.println("Invalid JWT: " + ex.getMessage());
+        } catch (SignatureException ex) {
+            System.err.println("Invalid JWT signature: " + ex.getMessage());
+        } catch (IllegalArgumentException ex) {
+            System.err.println("JWT claims string is empty: " + ex.getMessage());
         }
-        return false;
+        return false; // Token is invalid
     }
 
+
+    /**
+     * Extracts the subject (e.g., email) from the token.
+     *
+     * @param token The JWT token.
+     * @return The subject (e.g., email).
+     */
     public String getSubject(String token) {
         return parseClaims(token).getSubject();
     }
 
+
+    /**
+     * Parses claims from the given token.
+     *
+     * @param token The JWT token.
+     * @return Claims extracted from the token.
+     */
     private Claims parseClaims(String token) {
-        return Jwts.builder()
-                .setSigningKey(signingKey)
+        return Jwts.parser()
+                .setSigningKey(secret) // Use the secret to parse the token
                 .parseClaimsJws(token)
                 .getBody();
     }
 }
+
