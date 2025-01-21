@@ -1,4 +1,4 @@
-package com.Promo_pros.promos_perks_api.servicesImpl;
+package com.Promo_pros.promos_perks_api.service.servicesImpl;
 
 import com.Promo_pros.promos_perks_api.entity.Promotion;
 import com.Promo_pros.promos_perks_api.repository.PromotionRepository;
