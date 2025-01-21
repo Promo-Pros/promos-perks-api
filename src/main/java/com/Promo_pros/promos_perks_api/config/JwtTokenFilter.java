@@ -13,6 +13,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.ObjectUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
+import java.util.List;
+
 @Component
 public class JwtTokenFilter extends OncePerRequestFilter {
 
@@ -66,9 +68,14 @@ public class JwtTokenFilter extends OncePerRequestFilter {
 
     private UserDetails getUserDetails(String token) {
         String[] jwtSubject = jwtTokenUtil.getSubject(token).split(",");
-        UserDetails userDetails = User.builder().username(jwtSubject[0]).password(jwtSubject[0]).build();
+        String email = jwtSubject[0];
+        List<String> roles = jwtTokenUtil.getRoles(token);
 
-        return userDetails;
+        return User.builder()
+                .username(email)
+                .password("")
+                .roles(roles.toArray(new String[0]))
+                .build();
     }
 
 }

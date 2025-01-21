@@ -1,11 +1,14 @@
 package com.Promo_pros.promos_perks_api.util;
 
+import com.Promo_pros.promos_perks_api.entity.User;
 import io.jsonwebtoken.*;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
+import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 
 @Component
 public class JwtTokenUtil {
@@ -16,19 +19,22 @@ public class JwtTokenUtil {
     @Value("${jwt.secret}")
     private String secret;
 
-    public String generateAccessToken(UserDetails user) {
-        long now = new Date().getTime();
-        Date expirationTime = new Date(now + expiration);
+    public String generateAccessToken(User user) {
         return Jwts.builder()
-                .setSubject(String.format("%s", user.getUsername()))
+                .setSubject(user.getEmail() + "," + String.join(",", user.getRoles()))
                 .setIssuedAt(new Date())
-                .setExpiration(expirationTime)
+                .setExpiration(new Date(System.currentTimeMillis() + 60 * 60 * 1000)) //1 hr expiration
                 .signWith(SignatureAlgorithm.HS512, secret)
                 .compact();
 
     }
 
+    public List<String> getRoles(String token) {
+        String subject = getSubject(token);
+        return Arrays.asList(subject.split(",")[1].split(","));
+    }
 
+//may need to get rid of below???
     public boolean validateAccessToken(String token) {
         try {
             Jwts.parser().setSigningKey(secret).parseClaimsJws(token);
