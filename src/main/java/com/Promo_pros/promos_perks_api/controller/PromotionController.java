@@ -25,7 +25,7 @@ public class PromotionController {
     //GET
     @GetMapping
     public List<Promotion> getAllPromotions() {
-        return promotionService.getAllPromotions();
+        return promotionService.getPromotionsForUser();
 
     }
 

@@ -14,9 +14,12 @@ import org.springframework.security.web.authentication.WebAuthenticationDetailsS
 import org.springframework.stereotype.Component;
 import org.springframework.util.ObjectUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Component
 public class JwtTokenFilter extends OncePerRequestFilter {
@@ -33,12 +36,19 @@ public class JwtTokenFilter extends OncePerRequestFilter {
 
         String token = getAccessToken(request);
 
-        if (!jwtTokenUtil.validateAccessToken(token)) {
-            filterChain.doFilter(request, response);
+        try {
+            if (!jwtTokenUtil.validateAccessToken(token)) {
+                filterChain.doFilter(request, response);
+                return;
+            }
+
+            setAuthenticationContext(token, request);
+        } catch (Exception e) {
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            response.getWriter().write("Invalid or expired token");
             return;
         }
 
-        setAuthenticationContext(token, request);
         filterChain.doFilter(request, response);
     }
 
@@ -54,7 +64,7 @@ public class JwtTokenFilter extends OncePerRequestFilter {
 
     private void setAuthenticationContext(String token, HttpServletRequest request) {
         UserDetails userDetails = getUserDetails(token);
-        UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails, null, null);
+        UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
         authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
         SecurityContextHolder.getContext().setAuthentication(authentication);
     }
@@ -66,7 +76,13 @@ public class JwtTokenFilter extends OncePerRequestFilter {
         return User.builder()
                 .username(email)
                 .password("")  // Password isn't necessary for authentication after token validation
-                .roles(roles.toArray(new String[0]))
+                .authorities(getAuthorities(roles))
                 .build();
+    }
+
+    private List<GrantedAuthority> getAuthorities(List<String> roles) {
+        return roles.stream()
+                .map(SimpleGrantedAuthority::new)
+                .collect(Collectors.toList());
     }
 }

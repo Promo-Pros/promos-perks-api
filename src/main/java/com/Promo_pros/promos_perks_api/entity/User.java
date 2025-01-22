@@ -20,7 +20,6 @@ public class User {
     private int mtn;
     private String email;
     private String password;
-
     @Enumerated(EnumType.STRING)
     private AccountTypes status; //Business logic related account type
 

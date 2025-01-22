@@ -7,7 +7,7 @@ import java.util.List;
 public interface PromotionService {
     Promotion createPromotion(Promotion promotion);
 
-    List<Promotion> getAllPromotions();
+    List<Promotion> getPromotionsForUser();
 
     Promotion deletePromotion(String name);
 

@@ -5,16 +5,18 @@ import com.Promo_pros.promos_perks_api.repository.UserRepository;
 import com.Promo_pros.promos_perks_api.service.UserService;
 import com.Promo_pros.promos_perks_api.util.BCryptUtil;
 import com.Promo_pros.promos_perks_api.util.JwtTokenUtil;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.Set;
 
 @Service
-public class UserServiceImpl implements UserService {
+public class UserServiceImpl implements UserService, org.springframework.security.core.userdetails.UserDetailsService {
 
     private final JwtTokenUtil jwtTokenUtil;
-    private UserRepository userRepository;
-    private BCryptUtil bCryptUtil;
+    private final UserRepository userRepository;
+    private final BCryptUtil bCryptUtil;
 
     public UserServiceImpl(UserRepository userRepository, JwtTokenUtil jwtTokenUtil, BCryptUtil bCryptUtil) {
         this.userRepository = userRepository;
@@ -22,45 +24,35 @@ public class UserServiceImpl implements UserService {
         this.bCryptUtil = bCryptUtil;
     }
 
-    //may have to add an if statement to assign other roles other than default...
     @Override
     public User createUser(User user) {
-        if(user.getRoles() == null || user.getRoles().isEmpty()) {
-            user.setRoles(Set.of("ROLE_CUSTOMER")); //set to a default role
+        if (user.getRoles() == null || user.getRoles().isEmpty()) {
+            user.setRoles(Set.of("ROLE_CUSTOMER"));
         }
-        //Hash the password
+
         String hashedPassword = BCryptUtil.generatedSecurePassword(user.getPassword());
         user.setPassword(hashedPassword);
 
-
-      User savedUser = userRepository.save(user);
-
-      String token = jwtTokenUtil.generateAccessToken(savedUser);
-      // This will be used if we want new users to be automatically logged in
-//      savedUser.setToken(token);
-
-      return savedUser;
+        return userRepository.save(user);
     }
-
-    @Override
-    public User getUser(Long id) {
-        return userRepository.findById(id).orElse(null);
-    }
-
-//    @Override
-//    public User getUserByEmail(String email) {
-//        return null;
-//    }
 
     @Override
     public String loginUser(User user) {
-        User existingUser =  userRepository.findByEmail(user.getEmail()).orElse(null);
+        User existingUser = userRepository.findByEmail(user.getEmail()).orElse(null);
         if (existingUser != null && BCryptUtil.matchPasswords(user.getPassword(), existingUser.getPassword())) {
             return jwtTokenUtil.generateAccessToken(existingUser);
         }
         return "Invalid Login";
-
     }
 
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        User user = userRepository.findByEmail(username).orElseThrow(() -> new UsernameNotFoundException("User not found"));
 
+        return org.springframework.security.core.userdetails.User.builder()
+                .username(user.getEmail())
+                .password(user.getPassword())
+                .roles(user.getRoles().toArray(new String[0]))
+                .build();
+    }
 }

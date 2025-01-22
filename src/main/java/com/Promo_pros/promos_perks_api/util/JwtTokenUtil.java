@@ -1,12 +1,8 @@
 package com.Promo_pros.promos_perks_api.util;
-
-
 import com.Promo_pros.promos_perks_api.entity.User;
 import io.jsonwebtoken.*;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-
-
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;

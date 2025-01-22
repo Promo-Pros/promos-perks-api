@@ -1,61 +1,59 @@
 package com.Promo_pros.promos_perks_api.config;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.provisioning.InMemoryUserDetailsManager;
-import org.springframework.security.web.SecurityFilterChain;
+import com.Promo_pros.promos_perks_api.service.servicesImpl.UserServiceImpl;
+import com.Promo_pros.promos_perks_api.config.JwtTokenFilter;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-@EnableWebSecurity
 @Configuration
-public class SecurityConfig {
-    @Autowired
-    JwtTokenFilter jwtTokenFilter;
-    @Bean
-    public static PasswordEncoder passwordEncoder(){
-        return new BCryptPasswordEncoder();
+@EnableWebSecurity
+public class SecurityConfig extends WebSecurityConfigurerAdapter {
+
+    private final JwtTokenFilter jwtTokenFilter;
+    private final UserServiceImpl userService;
+
+    public SecurityConfig(JwtTokenFilter jwtTokenFilter, UserServiceImpl userService) {
+        this.jwtTokenFilter = jwtTokenFilter;
+        this.userService = userService;
     }
 
-    @Bean
-    SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    @Override
+    protected void configure(HttpSecurity http) throws Exception {
         http
-                .csrf().disable()
-                .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers( "/users").permitAll()// Public endpoint
-                        .requestMatchers("/promotions/admin/**").hasRole("ADMIN") //Restricted to admin
-                        .requestMatchers("/promotions/veteran/**").hasRole("VETERAN") //Restricted to veterans
-                        .requestMatchers("/promotions/employee/**").hasRole("EMPLOYEE") //Restricted to employees
-                        .requestMatchers("/promotions/**").hasAnyRole("CUSTOMER", "EMPLOYEE", "VETERAN") //General access
-                        .anyRequest().authenticated() // All other endpoints require authentication
-                )
-
-        .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-
-        http.addFilterBefore(jwtTokenFilter, UsernamePasswordAuthenticationFilter.class);
-
-        return http.build();
+                .authorizeRequests()
+                .antMatchers(HttpMethod.POST, "/users/login", "/users/register").permitAll()  // Allow login and register
+                .anyRequest().authenticated()  // All other requests need to be authenticated
+                .and()
+                .addFilterBefore(jwtTokenFilter, UsernamePasswordAuthenticationFilter.class);  // Add JWT filter
     }
 
+    @Override
+    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+        auth.userDetailsService(userService).passwordEncoder(passwordEncoder());
+    }
 
-    //this may need to change...because we are not using in memory db
     @Bean
-    public UserDetailsService userDetailsService() {
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();  // Using BCrypt for password encoding
+    }
 
-        UserDetails admin = User.builder().username("admin@admin.com").password(passwordEncoder().encode("admin")).roles("ADMIN")
-                .build();
-
-        UserDetails user = User.builder().username("user@user.com").password(passwordEncoder().encode("user")).roles("USER")
-                .build();
-
-        return new InMemoryUserDetailsManager(admin, user);
+    @Override
+    @Bean
+    public AuthenticationManager authenticationManagerBean() throws Exception {
+        return super.authenticationManagerBean();  // Exposing the AuthenticationManager for JWT filter
     }
 }
