@@ -29,7 +29,6 @@ public class UserServiceImpl implements UserService, org.springframework.securit
         if (user.getRoles() == null || user.getRoles().isEmpty()) {
             user.setRoles(Set.of("ROLE_CUSTOMER"));
         }
-
         String hashedPassword = BCryptUtil.generatedSecurePassword(user.getPassword());
         user.setPassword(hashedPassword);
 
@@ -44,7 +43,6 @@ public class UserServiceImpl implements UserService, org.springframework.securit
         }
         return "Invalid Login";
     }
-
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         User user = userRepository.findByEmail(username).orElseThrow(() -> new UsernameNotFoundException("User not found"));

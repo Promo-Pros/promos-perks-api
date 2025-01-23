@@ -9,5 +9,5 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface PromotionRepository extends JpaRepository<Promotion, Long> {
     List<Promotion> findByStatus(AccountTypes status);
-    Promotion findByNameAndUserEmail(String name, String email);
+//    Promotion findByNameAndUserEmail(String name, String email);
 }

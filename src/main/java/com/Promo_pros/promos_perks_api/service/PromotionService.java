@@ -9,7 +9,7 @@ public interface PromotionService {
 
     List<Promotion> getPromotionsForUser();
 
-    Promotion deletePromotion(String name);
+//    Promotion deletePromotion(String name);
 
-    Promotion updatePromotion(String name, Promotion promotionDetails);
+//    Promotion updatePromotion(String name, Promotion promotionDetails);
 }
