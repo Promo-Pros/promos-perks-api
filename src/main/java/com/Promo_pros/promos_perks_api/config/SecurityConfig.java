@@ -30,7 +30,7 @@ public class SecurityConfig {
         http
                 .csrf().disable()
                 .authorizeHttpRequests(authorize -> authorize
-//                        .requestMatchers( "/users").permitAll()// Public endpoint
+                        .requestMatchers( "/user/**").permitAll()// Public endpoint
                         .requestMatchers("/promotions/admin/**").hasRole("ADMIN") //Restricted to admin
                         .requestMatchers("/promotions/veteran/**").hasRole("VETERAN") //Restricted to veterans
                         .requestMatchers("/promotions/employee/**").hasRole("EMPLOYEE") //Restricted to employees
