@@ -1,6 +1,6 @@
 package com.Promo_pros.promos_perks_api.util;
 
-public class ApiResponse {
+public class ApiResponse<A> {
 
     private int status;
     private String message;
