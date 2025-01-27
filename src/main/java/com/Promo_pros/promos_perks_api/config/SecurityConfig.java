@@ -38,9 +38,8 @@ public class SecurityConfig {
 
 
     @Bean
-    public AuthenticationManager authenticationManagerBean(HttpSecurity http) throws Exception {
-        return http.getSharedObject(AuthenticationManagerBuilder.class)
-                .userDetailsService(userDetailsService)
+    public AuthenticationManager authenticationManager(AuthenticationManagerBuilder auth) throws Exception {
+        return auth.userDetailsService(userDetailsService)
                 .passwordEncoder(encoder())
                 .and()
                 .build();
@@ -51,14 +50,6 @@ public class SecurityConfig {
         auth.userDetailsService(userDetailsService)
                 .passwordEncoder(encoder());
     }
-
-    @Bean
-    public JwtTokenFilter authenticationTokenFilterBean() throws Exception {
-        return new JwtTokenFilter();
-    }
-
-
-
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -74,20 +65,4 @@ public class SecurityConfig {
 
         return http.build();
     }
-
-    @Override
-    protected void configure(HttpSecurity http) throws Exception {
-        http.cors().and().csrf().disable().
-                authorizeRequests()
-                .antMatchers("/token/*", "/register").permitAll()
-                .anyRequest().authenticated()
-                .and()
-                .exceptionHandling().authenticationEntryPoint(unauthorizedHandler).and()
-                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-        http
-                .addFilterBefore(authenticationTokenFilterBean(), UsernamePasswordAuthenticationFilter.class);
-    }
-
-
-
 }

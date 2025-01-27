@@ -27,16 +27,13 @@ import static com.Promo_pros.promos_perks_api.Constants.TOKEN_PREFIX;
 @Component
 public class JwtTokenFilter extends OncePerRequestFilter {
 
+    //removed the constructor to allow for use of field injection(@Autowired)
     @Autowired
     private UserDetailsService userDetailsService;
 
     @Autowired
     private JwtTokenUtil jwtTokenUtil;
 
-    public JwtTokenFilter(UserDetailsService userDetailsService, JwtTokenUtil jwtTokenUtil) {
-        this.userDetailsService = userDetailsService;
-        this.jwtTokenUtil = jwtTokenUtil;
-    }
 
     public JwtTokenFilter() {
 
@@ -72,7 +69,7 @@ public class JwtTokenFilter extends OncePerRequestFilter {
 
             if (jwtTokenUtil.validateToken(authToken, userDetails)) {
 
-                UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails, null, Arrays.asList(new SimpleGrantedAuthority("ROLE_ADMIN")));
+                UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
                 authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(req));
                 logger.info("authenticated user " + email + ", setting security context");
                 SecurityContextHolder.getContext().setAuthentication(authentication);

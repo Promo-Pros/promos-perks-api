@@ -28,10 +28,15 @@ public class AuthenticationController {
 
     @RequestMapping(value = "/generate-token", method = RequestMethod.POST)
     public ApiResponse<AuthToken> register(@RequestBody LoginUser loginUser) throws AuthenticationException {
+        try{
+            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginUser.getEmail(), loginUser.getPassword()));
+            final User user = userService.getUser(loginUser.getEmail());
+            final String token = jwtTokenUtil.generateToken(user);
+        } catch (AuthenticationException ex) {
+            return new ApiResponse<>(401, "Invalid email or password", null);
+        }
 
-        authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginUser.getEmail(), loginUser.getPassword()));
-        final User user = userService.getUser(loginUser.getUsername());
-        final String token = jwtTokenUtil.generateToken(user);
-        return new ApiResponse<>(200, "success", new AuthToken(token, user.getEmail()));
+
+            return new ApiResponse<>(200, "success", new AuthToken(token, user.getEmail()));
     }
 }
