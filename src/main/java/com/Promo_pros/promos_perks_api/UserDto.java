@@ -1,0 +1,61 @@
+package com.Promo_pros.promos_perks_api;
+
+import com.Promo_pros.promos_perks_api.roles.AccountTypes;
+
+public class UserDto {
+    private Long id;
+
+    private String name;
+    private int mtn;
+    private String email;
+    private String password;
+    private AccountTypes status;
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public int getMtn() {
+        return mtn;
+    }
+
+    public void setMtn(int mtn) {
+        this.mtn = mtn;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public AccountTypes getStatus() {
+        return status;
+    }
+
+    public void setStatus(AccountTypes status) {
+        this.status = status;
+    }
+}
