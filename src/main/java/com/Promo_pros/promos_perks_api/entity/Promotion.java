@@ -1,8 +1,11 @@
 package com.Promo_pros.promos_perks_api.entity;
 
 import com.Promo_pros.promos_perks_api.roles.AccountTypes;
+import com.Promo_pros.promos_perks_api.roles.Role;
 import jakarta.persistence.*;
 import lombok.*;
+
+import java.util.List;
 
 @Entity
 @AllArgsConstructor
@@ -15,8 +18,10 @@ public class Promotion {
     private String name;
     private String description;
 
-    @Enumerated
-    private AccountTypes status;
+    @ElementCollection(fetch = FetchType.EAGER)
+    @Enumerated(EnumType.STRING)
+    private List<Role> eligibleRoles;
+
 
     public Long getId() {
         return id;
@@ -42,11 +47,11 @@ public class Promotion {
         this.description = description;
     }
 
-    public AccountTypes getStatus() {
-        return status;
+    public List<Role> getEligibleRoles() {
+        return eligibleRoles;
     }
 
-    public void setStatus(AccountTypes status) {
-        this.status = status;
+    public void setEligibleRoles(List<Role> eligibleRoles) {
+        this.eligibleRoles = eligibleRoles;
     }
 }

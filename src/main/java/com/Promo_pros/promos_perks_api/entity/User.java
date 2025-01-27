@@ -2,6 +2,7 @@ package com.Promo_pros.promos_perks_api.entity;
 
 
 import com.Promo_pros.promos_perks_api.roles.AccountTypes;
+import com.Promo_pros.promos_perks_api.roles.Role;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -23,6 +24,9 @@ public class User {
     private String password;
     @Enumerated
     private AccountTypes status;
+
+    @Enumerated(EnumType.STRING)
+    private Role role; //to represent the user role
 
     public String getPassword() {
         return password;
@@ -62,5 +66,21 @@ public class User {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public AccountTypes getStatus() {
+        return status;
+    }
+
+    public void setStatus(AccountTypes status) {
+        this.status = status;
+    }
+
+    public Role getRole() {
+        return role;
+    }
+
+    public void setRole(Role role) {
+        this.role = role;
     }
 }

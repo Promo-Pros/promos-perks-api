@@ -3,6 +3,7 @@ package com.Promo_pros.promos_perks_api.controller;
 import com.Promo_pros.promos_perks_api.entity.Promotion;
 import com.Promo_pros.promos_perks_api.service.PromotionService;
 import org.springframework.web.bind.annotation.*;
+import com.Promo_pros.promos_perks_api.roles.Role;
 
 import java.util.List;
 
@@ -27,6 +28,11 @@ public class PromotionController {
     public List<Promotion> getAllPromotions() {
         return promotionService.getAllPromotions();
 
+    }
+
+    @GetMapping("/filtered")
+    public List getPromotionsByRole(@RequestParam Role role) {
+        return promotionService.getPromotionsByRole(role);
     }
 
     //DELETE

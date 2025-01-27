@@ -27,7 +27,7 @@ import static com.Promo_pros.promos_perks_api.Constants.TOKEN_PREFIX;
 @Component
 public class JwtTokenFilter extends OncePerRequestFilter {
 
-    //removed the constructor to allow for use of field injection(@Autowired)
+//    removed the constructor to allow for use of field injection(@Autowired)
     @Autowired
     private UserDetailsService userDetailsService;
 

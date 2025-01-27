@@ -2,10 +2,12 @@ package com.Promo_pros.promos_perks_api.service.servicesImpl;
 
 import com.Promo_pros.promos_perks_api.entity.Promotion;
 import com.Promo_pros.promos_perks_api.repository.PromotionRepository;
+import com.Promo_pros.promos_perks_api.roles.Role;
 import com.Promo_pros.promos_perks_api.service.PromotionService;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class PromotionServiceImpl implements PromotionService {
@@ -42,9 +44,16 @@ public class PromotionServiceImpl implements PromotionService {
         if(existingPromotion != null) {
             existingPromotion.setName(promotionDetails.getName());
             existingPromotion.setDescription(promotionDetails.getDescription());
-            existingPromotion.setStatus(promotionDetails.getStatus());
+            existingPromotion.setEligibleRoles(promotionDetails.getEligibleRoles()); //Update eligible Roles
             return promotionRepository.save(existingPromotion);
         }
         return null;
     }
+
+    @Override
+    public List getPromotionsByRole(Role role) {
+        return promotionRepository.findAll()
+                .stream()
+                .filter(promotion -> promotion.getEligibleRoles().contains(role))
+                .collect(Collectors.toList()); }
 }

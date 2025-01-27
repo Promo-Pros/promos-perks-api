@@ -5,6 +5,8 @@ import com.Promo_pros.promos_perks_api.entity.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
+import java.util.Optional;
+
 public interface UserService {
     User save(UserDto user);
 
@@ -15,7 +17,7 @@ public interface UserService {
 
     User getUser(Long id);
 
-    User getUserByEmail(String email);
+    Optional<User> getUserByEmail(String email);
 
     String loginUser(User user);
 }
