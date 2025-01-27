@@ -8,12 +8,14 @@ import org.springframework.security.web.AuthenticationEntryPoint;
 import java.io.IOException;
 import java.io.Serializable;
 
-public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint, Serializable {
+//Will handle unauthorized access
+
+public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
     @Override
     public void commence(HttpServletRequest request,
                          HttpServletResponse response,
-                         AuthenticationException e) throws IOException {
+                         AuthenticationException authException) throws IOException {
 
-        response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized");
+        response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized: " + authException.getMessage());
     }
 }
