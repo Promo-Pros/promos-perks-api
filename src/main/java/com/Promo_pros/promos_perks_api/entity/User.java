@@ -16,17 +16,13 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String name;
-    private int mtn;
+//    private String name;
+//    private int mtn;
     private String email;
     private String password;
+
     @Enumerated(EnumType.STRING)
     private AccountTypes status; //Business logic related account type
-
-    @ElementCollection(fetch = FetchType.EAGER)
-    @CollectionTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"))
-    @Column(name = "role")
-    private Set<String> roles = new HashSet<>(); //Security related roles
 
     public String getPassword() {
         return password;
@@ -44,21 +40,21 @@ public class User {
         this.email = email;
     }
 
-    public int getMtn() {
-        return mtn;
-    }
-
-    public void setMtn(int mtn) {
-        this.mtn = mtn;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
+//    public int getMtn() {
+//        return mtn;
+//    }
+//
+//    public void setMtn(int mtn) {
+//        this.mtn = mtn;
+//    }
+//
+//    public String getName() {
+//        return name;
+//    }
+//
+//    public void setName(String name) {
+//        this.name = name;
+//    }
 
     public Long getId() {
         return id;
@@ -76,11 +72,4 @@ public class User {
         this.status = status;
     }
 
-    public Set<String> getRoles(){
-        return roles;
-    }
-
-    public void setRoles(Set<String> roles) {
-        this.roles = roles;
-    }
 }

@@ -14,37 +14,19 @@ public class JwtTokenUtil {
     private long expiration;
     @Value("${jwt.secret}")
     private String secret;
-    /**
-     * Generates a JWT token for the given user.
-     *
-     * @param user The user object for whom the token is generated.
-     * @return A signed JWT token.
-     */
     public String generateAccessToken(User user) {
         return Jwts.builder()
                 .setSubject(user.getEmail()) // User's email as the subject
-                .claim("roles", user.getRoles()) // Store roles as claims
+                .claim("status", user.getStatus()) // Store status as claims
                 .setIssuedAt(new Date()) // Token issue date
                 .setExpiration(new Date(System.currentTimeMillis() + expiration)) // Expiration time
                 .signWith(SignatureAlgorithm.HS512, secret) // Sign with HS512 algorithm and secret
                 .compact();
     }
-    /**
-     * Extracts roles from the given JWT token.
-     *
-     * @param token The JWT token.
-     * @return A list of roles.
-     */
-    public List<String> getRoles(String token) {
+    public List<String> getStatus(String token) {
         Claims claims = parseClaims(token);
-        return Arrays.asList(claims.get("roles", String.class).split(","));
+        return Arrays.asList(claims.get("status", String.class).split(","));
     }
-    /**
-     * Validates the given JWT token.
-     *
-     * @param token The JWT token to validate.
-     * @return True if the token is valid; false otherwise.
-     */
     public boolean validateAccessToken(String token) {
         try {
             Jwts.parser().setSigningKey(secret).parseClaimsJws(token);
@@ -60,21 +42,9 @@ public class JwtTokenUtil {
         }
         return false; // Token is invalid
     }
-    /**
-     * Extracts the subject (e.g., email) from the token.
-     *
-     * @param token The JWT token.
-     * @return The subject (e.g., email).
-     */
     public String getSubject(String token) {
         return parseClaims(token).getSubject();
     }
-    /**
-     * Parses claims from the given token.
-     *
-     * @param token The JWT token.
-     * @return Claims extracted from the token.
-     */
     private Claims parseClaims(String token) {
         return Jwts.parser()
                 .setSigningKey(secret) // Use the secret to parse the token

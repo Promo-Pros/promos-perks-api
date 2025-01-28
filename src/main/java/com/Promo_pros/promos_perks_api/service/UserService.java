@@ -8,7 +8,3 @@ public interface UserService {
     String loginUser(User user);
 }
 
-
-//    User getUser(Long id);
-
-//    User getUserByEmail(String email);

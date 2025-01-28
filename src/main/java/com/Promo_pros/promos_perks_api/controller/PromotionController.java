@@ -29,16 +29,5 @@ public class PromotionController {
 
     }
 
-    //DELETE
-//    @DeleteMapping("/{name}")
-//    public Promotion deletePromotion(@PathVariable String name) {
-//        return promotionService.deletePromotion(name);
-//    }
-
-//    //PUT
-//    @PutMapping("/{name}")
-//    public Promotion updatePromotion(@PathVariable String name, @RequestBody Promotion promotionDetails) {
-//        return promotionService.updatePromotion(name, promotionDetails);
-//    }
 
 }

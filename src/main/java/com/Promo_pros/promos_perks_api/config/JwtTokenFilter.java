@@ -29,6 +29,15 @@ public class JwtTokenFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+        // Skip the filter for /users/login and /users/register
+        if (request.getRequestURI().startsWith("/users/login") || request.getRequestURI().startsWith("/users/register")) {
+            filterChain.doFilter(request, response);
+            return;
+        }
+
+        String authorizationHeader = request.getHeader("Authorization");
+        System.out.println("Authorization header: " + authorizationHeader);
+
         if (!hasAuthorizationBearer(request)) {
             filterChain.doFilter(request, response);
             return;
@@ -71,17 +80,17 @@ public class JwtTokenFilter extends OncePerRequestFilter {
 
     private UserDetails getUserDetails(String token) {
         String email = jwtTokenUtil.getSubject(token);
-        List<String> roles = jwtTokenUtil.getRoles(token);
+        List<String> statuses = jwtTokenUtil.getStatus(token);
 
         return User.builder()
                 .username(email)
                 .password("")  // Password isn't necessary for authentication after token validation
-                .authorities(getAuthorities(roles))
+                .authorities(getAuthorities(statuses))
                 .build();
     }
 
-    private List<GrantedAuthority> getAuthorities(List<String> roles) {
-        return roles.stream()
+    private List<GrantedAuthority> getAuthorities(List<String> statuses) {
+        return statuses.stream()
                 .map(SimpleGrantedAuthority::new)
                 .collect(Collectors.toList());
     }
