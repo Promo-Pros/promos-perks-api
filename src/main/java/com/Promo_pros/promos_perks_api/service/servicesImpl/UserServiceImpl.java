@@ -1,11 +1,9 @@
 package com.Promo_pros.promos_perks_api.service.servicesImpl;
 
-import com.Promo_pros.promos_perks_api.UserDto;
 import com.Promo_pros.promos_perks_api.entity.User;
 import com.Promo_pros.promos_perks_api.repository.UserRepository;
 import com.Promo_pros.promos_perks_api.service.UserService;
 import com.Promo_pros.promos_perks_api.util.BCryptUtil;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -19,7 +17,7 @@ import java.util.Optional;
 
 // was implementing UserService
 
-@Service
+@Service("userService")
 public class UserServiceImpl implements UserDetailsService, UserService {
 
     //@Autowired
@@ -43,7 +41,7 @@ public class UserServiceImpl implements UserDetailsService, UserService {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found with email: " + email));
 
-        return buildUserDetails(user);
+        return user;
     }
 
     private Collection<? extends GrantedAuthority> getAuthorities(User user) {

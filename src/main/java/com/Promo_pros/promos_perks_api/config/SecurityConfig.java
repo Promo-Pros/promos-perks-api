@@ -2,6 +2,7 @@ package com.Promo_pros.promos_perks_api.config;
 
 import jakarta.annotation.Resource;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -21,7 +22,8 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfig {
 
-    @Resource(name = "userService") //Injecting the custom UserDetailsService implementation
+    @Autowired
+    @Qualifier("userService") //Injecting the custom UserDetailsService implementation
     private UserDetailsService userDetailsService;
 
     @Autowired
@@ -39,10 +41,9 @@ public class SecurityConfig {
 
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationManagerBuilder auth) throws Exception {
-        return auth.userDetailsService(userDetailsService)
-                .passwordEncoder(encoder())
-                .and()
-                .build();
+                auth.userDetailsService(userDetailsService)
+                .passwordEncoder(encoder());
+                return auth.build();
     }
 
     @Autowired

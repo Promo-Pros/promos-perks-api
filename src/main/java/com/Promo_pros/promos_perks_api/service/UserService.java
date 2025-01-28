@@ -8,7 +8,8 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import java.util.Optional;
 
 public interface UserService {
-    User save(UserDto user);
+
+    User save(User user);
 
     //new
     UserDetails loadUserByEmail(String s) throws UsernameNotFoundException;
@@ -20,4 +21,5 @@ public interface UserService {
     Optional<User> getUserByEmail(String email);
 
     String loginUser(User user);
+
 }
