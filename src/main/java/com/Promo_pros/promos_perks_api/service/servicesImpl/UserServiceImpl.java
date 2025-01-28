@@ -22,7 +22,7 @@ public class UserServiceImpl implements UserService {
         this.bCryptUtil = bCryptUtil;
     }
 
-    //may have to add an if statement to assign other roles other than default...
+
     @Override
     public User createUser(User user) {
         if(user.getRoles() == null || user.getRoles().isEmpty()) {

@@ -18,12 +18,10 @@ public class JwtTokenUtil {
     private long expiration;
     @Value("${jwt.secret}")
     private String secret;
-    /**
-     * Generates a JWT token for the given user.
-     *
-     * @param user The user object for whom the token is generated.
-     * @return A signed JWT token.
-     */
+
+//    Generates a JWT token for the given user.
+//    The user object for whom the token is generated.
+//    return A signed JWT token.
     public String generateAccessToken(User user) {
         return Jwts.builder()
                 .setSubject(user.getEmail()) // User's email as the subject
@@ -33,22 +31,16 @@ public class JwtTokenUtil {
                 .signWith(SignatureAlgorithm.HS512, secret) // Sign with HS512 algorithm and secret
                 .compact();
     }
-    /**
-     * Extracts roles from the given JWT token.
-     *
-     * @param token The JWT token.
-     * @return A list of roles.
-     */
+
+//    Extracts roles from the given JWT token.
+//    return A list of roles.
     public List<String> getRoles(String token) {
         Claims claims = parseClaims(token);
         return Arrays.asList(claims.get("roles", String.class).split(","));
     }
-    /**
-     * Validates the given JWT token.
-     *
-     * @param token The JWT token to validate.
-     * @return True if the token is valid; false otherwise.
-     */
+
+//    Validates the given JWT token.
+//    return True if the token is valid; false otherwise.
     public boolean validateAccessToken(String token) {
         try {
             Jwts.parser().setSigningKey(secret).parseClaimsJws(token);
@@ -73,12 +65,9 @@ public class JwtTokenUtil {
     public String getSubject(String token) {
         return parseClaims(token).getSubject();
     }
-    /**
-     * Parses claims from the given token.
-     *
-     * @param token The JWT token.
-     * @return Claims extracted from the token.
-     */
+
+//    Parses claims from the given token.
+//    return Claims extracted from the token.
     private Claims parseClaims(String token) {
         return Jwts.parser()
                 .setSigningKey(secret) // Use the secret to parse the token
