@@ -28,15 +28,15 @@ import static com.Promo_pros.promos_perks_api.Constants.TOKEN_PREFIX;
 public class JwtTokenFilter extends OncePerRequestFilter {
 
 //    removed the constructor to allow for use of field injection(@Autowired)
-    @Autowired
-    private UserDetailsService userDetailsService;
+    private final UserDetailsService userDetailsService;
+
+    private final JwtTokenUtil jwtTokenUtil;
 
     @Autowired
-    private JwtTokenUtil jwtTokenUtil;
+    public JwtTokenFilter(UserDetailsService userDetailsService, JwtTokenUtil jwtTokenUtil) {
 
-
-    public JwtTokenFilter() {
-
+        this.userDetailsService = userDetailsService;
+        this.jwtTokenUtil = jwtTokenUtil;
     }
 
 
@@ -48,30 +48,21 @@ public class JwtTokenFilter extends OncePerRequestFilter {
 
         //Checks if authorization header is valid and extracts JWT
         if (header != null && header.startsWith(TOKEN_PREFIX)) {
-            authToken = header.replace(TOKEN_PREFIX,"");
+            authToken = header.replace(TOKEN_PREFIX, "");
             try {
                 email = jwtTokenUtil.getUsernameFromToken(authToken);
-            } catch (IllegalArgumentException e) {
-                logger.error("an error occured during getting username from token", e);
-            } catch (ExpiredJwtException e) {
-                logger.warn("the token is expired and not valid anymore", e);
-            } catch(SignatureException e){
-                logger.error("Authentication Failed. Username or Password not valid.");
+            } catch (IllegalArgumentException | ExpiredJwtException | SignatureException e) {
+                logger.warn("Token validation failed: " + e.getMessage());
             }
-        } else {
-            logger.warn("couldn't find bearer string, will ignore the header");
         }
 
-        //Validates token and sets authentication context
         if (email != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-
             UserDetails userDetails = userDetailsService.loadUserByUsername(email);
 
             if (jwtTokenUtil.validateToken(authToken, userDetails)) {
-
-                UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+                UsernamePasswordAuthenticationToken authentication =
+                        new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
                 authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(req));
-                logger.info("authenticated user " + email + ", setting security context");
                 SecurityContextHolder.getContext().setAuthentication(authentication);
             }
         }

@@ -40,17 +40,10 @@ public class SecurityConfig {
 
 
     @Bean
-    public AuthenticationManager authenticationManager(AuthenticationManagerBuilder auth) throws Exception {
-                auth.userDetailsService(userDetailsService)
-                .passwordEncoder(encoder());
-                return auth.build();
+    public AuthenticationManager authenticationManager(AuthenticationManagerBuilder builder) throws Exception {
+               return builder.userDetailsService(userDetailsService).passwordEncoder(encoder()).build();
     }
 
-    @Autowired
-    public void globalUserDetails(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(userDetailsService)
-                .passwordEncoder(encoder());
-    }
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
