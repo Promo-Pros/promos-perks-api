@@ -33,6 +33,7 @@ public class UserController {
     //GET
     @GetMapping("/{id}")
     private User getUser(@PathVariable Long id){
+//        System.out.println(id);
         return  userService.getUser(id);
     }
 }
