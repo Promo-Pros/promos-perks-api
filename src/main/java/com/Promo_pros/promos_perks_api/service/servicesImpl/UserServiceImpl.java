@@ -60,7 +60,7 @@ public class UserServiceImpl implements UserDetailsService, UserService {
 
     @Override
     public User getUser(Long id) {
-        return userRepository.findById(id).orElse(new User());
+        return userRepository.findById(id).orElse(null);
     }
 
     @Override
@@ -85,6 +85,6 @@ public class UserServiceImpl implements UserDetailsService, UserService {
         User user = userRepository.findByEmail(username)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found with email: " + username));
 
-        return buildUserDetails(user);
+        return user;
     }
 }

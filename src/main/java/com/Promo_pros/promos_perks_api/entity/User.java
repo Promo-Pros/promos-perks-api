@@ -4,7 +4,12 @@ package com.Promo_pros.promos_perks_api.entity;
 import com.Promo_pros.promos_perks_api.roles.AccountTypes;
 import com.Promo_pros.promos_perks_api.roles.Role;
 import jakarta.persistence.*;
+import org.springframework.security.core.GrantedAuthority;
+import java.util.Collection;
+import java.util.Collections;
 import lombok.*;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.CrossOrigin;
 
 @Entity
@@ -13,7 +18,7 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 //@Setter
 //@Getter
 @Table(name = "users")
-public class User {
+public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -22,7 +27,8 @@ public class User {
     private int mtn;
     private String email;
     private String password;
-    @Enumerated
+
+    @Enumerated(EnumType.STRING)
     private AccountTypes status;
 
     @Enumerated(EnumType.STRING)
@@ -82,5 +88,38 @@ public class User {
 
     public void setRole(Role role) {
         this.role = role;
+    }
+
+
+    //added 5:44 1/27/25
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        // Map the role to a GrantedAuthority
+        return Collections.singleton(new SimpleGrantedAuthority(role.name()));
+    }
+
+    @Override
+    public String getUsername() {
+        return email; // Use email as the username
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true; // Change as needed
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true; // Change as needed
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true; // Change as needed
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return true; // Change as needed
     }
 }
