@@ -14,9 +14,7 @@ public class Promotion {
     private Long id;
     private String name;
     private String description;
-
-    @Enumerated
-    private AccountTypes status;
+    private String status;
 
     public Long getId() {
         return id;
@@ -42,11 +40,11 @@ public class Promotion {
         this.description = description;
     }
 
-    public AccountTypes getStatus() {
+    public String getStatus() {
         return status;
     }
 
-    public void setStatus(AccountTypes status) {
+    public void setStatus(String status) {
         this.status = status;
     }
 }
