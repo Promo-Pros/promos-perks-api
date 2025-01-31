@@ -23,9 +23,9 @@ public class PromotionController {
     }
 
     //GET
-    @GetMapping
-    public List<Promotion> getAllPromotions() {
-        return promotionService.getAllPromotions();
+    @GetMapping("/{status}")
+    public List<Promotion> getAllPromotions(@PathVariable String status) {
+        return promotionService.getAllPromotions(status);
 
     }
 

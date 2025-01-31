@@ -7,9 +7,9 @@ INSERT INTO users (name, mtn, email, password, status) VALUES
 ('Emily Wilson', 2722345678, 'emily.wilson@example.com', '$2a$10$oO8peCeeQK9mD8lcpKuX1umO/uCAJucZXHp3GHMF6ZqsYjrROnEbi', 'employee');
 
 INSERT INTO Promotion (name, description, status) VALUES
-('Super Saver', 'Get unlimited calls and texts for just $10 a week!', 'employee'),
+('Super Saver', 'Get unlimited calls and texts for just $10 a week!', 'customer'),
 ('Data Delight', 'Enjoy 5GB of extra data every month for only $5!', 'employee'),
-('Roaming Relax', 'Travel with peace of mind: international roaming at no extra cost.', 'employee'),
+('Roaming Relax', 'Travel with peace of mind: international roaming at no extra cost.', 'veteran'),
 ('Night Owl', 'Unlimited data from midnight to 6 AM at half the usual rate.', 'employee'),
-('Weekend Wonder', 'Double your talk time and data allowances every weekend.', 'employee'),
+('Weekend Wonder', 'Double your talk time and data allowances every weekend.', 'veteran'),
 ('Family Fun', 'Add up to 3 family members for just $20 a month. Shared data and more!', 'employee');
