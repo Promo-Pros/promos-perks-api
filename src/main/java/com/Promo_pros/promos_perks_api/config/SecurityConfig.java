@@ -22,8 +22,9 @@ import static org.springframework.security.web.util.matcher.AntPathRequestMatche
 public class SecurityConfig {
     @Autowired
     JwtTokenFilter jwtTokenFilter;
+
     @Bean
-    public static PasswordEncoder passwordEncoder(){
+    public static PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
@@ -34,12 +35,12 @@ public class SecurityConfig {
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers("error").permitAll()
                         .requestMatchers(antMatcher("/h2-console/**")).permitAll()
-                        .requestMatchers( "/user/**").permitAll()// Public endpoint
+                        .requestMatchers("/user/**").permitAll()// Public endpoint
                         .requestMatchers("/promotions/admin/**").hasRole("ADMIN") //Restricted to admin
                         .requestMatchers("/promotions/veteran/**").hasRole("VETERAN") //Restricted to veterans
                         .requestMatchers("/promotions/employee/**").hasRole("EMPLOYEE") //Restricted to employees
                         .requestMatchers("/promotions/**").hasAnyRole("CUSTOMER", "EMPLOYEE", "VETERAN") //General access
-                        .requestMatchers( "/favicon.ico").permitAll()// Public endpoint
+                        .requestMatchers("/favicon.ico").permitAll()// Public endpoint
                         .anyRequest().authenticated() // All other endpoints require authentication
                 )
 
@@ -49,3 +50,5 @@ public class SecurityConfig {
 
         return http.build();
     }
+
+}
