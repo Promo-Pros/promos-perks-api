@@ -10,6 +10,10 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Entity
+//@AllArgsConstructor
+//@NoArgsConstructor
+//@Setter
+//@Getter
 @Table(name = "users")
 public class User {
     @Id
@@ -17,17 +21,11 @@ public class User {
     private Long id;
 
     private String name;
-    private int mtn;
+    private Long mtn;
     private String email;
     private String password;
 
-    @Enumerated(EnumType.STRING)
-    private AccountTypes status; //Business logic related account type
-
-    @ElementCollection(fetch = FetchType.EAGER)
-    @CollectionTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"))
-    @Column(name = "role")
-    private Set<String> roles = new HashSet<>(); //Security related roles
+    private String status;
 
     public String getPassword() {
         return password;
@@ -67,21 +65,5 @@ public class User {
 
     public void setId(Long id) {
         this.id = id;
-    }
-
-    public AccountTypes getStatus() {
-        return status;
-    }
-
-    public void setStatus(AccountTypes status) {
-        this.status = status;
-    }
-
-    public Set<String> getRoles(){
-        return roles;
-    }
-
-    public void setRoles(Set<String> roles) {
-        this.roles = roles;
     }
 }

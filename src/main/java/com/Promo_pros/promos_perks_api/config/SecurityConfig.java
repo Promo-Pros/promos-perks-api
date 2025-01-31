@@ -49,18 +49,3 @@ public class SecurityConfig {
 
         return http.build();
     }
-
-
-    //this may need to change...because we are not using in memory db
-    @Bean
-    public UserDetailsService userDetailsService() {
-
-        UserDetails admin = User.builder().username("admin@admin.com").password(passwordEncoder().encode("admin")).roles("ADMIN")
-                .build();
-
-        UserDetails user = User.builder().username("user@user.com").password(passwordEncoder().encode("user")).roles("USER")
-                .build();
-
-        return new InMemoryUserDetailsManager(admin, user);
-    }
-}
